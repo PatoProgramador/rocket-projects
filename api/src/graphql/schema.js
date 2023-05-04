@@ -5,6 +5,25 @@ const typeDefs = `
     type Query {
         hello: String
     }
+
+    type Mutation {
+        createProject(input: ProjectInput): Project
+    }
+
+    type Project {
+        _id: ID
+        clientName: String!
+        value: Int!
+        department: String!
+        city: String!
+    }
+
+    input ProjectInput {
+        clientName: String!
+        value: Int!
+        department: String!
+        city: String!
+    }
 `;
 
 export default makeExecutableSchema({
