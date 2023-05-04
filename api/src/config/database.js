@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export async function connect() {
+export async function connectDB() {
     try {
-        await mongoose.connect(process.env.MONGO_DB_URI, {
+        const conn = await mongoose.connect(process.env.MONGO_DB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
-        console.log('>DB is connected')
+        console.log(`Conection to ${conn.connection.name} database established`)
     } catch (error) {
         console.log(error)
     }

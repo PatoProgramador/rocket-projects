@@ -8,6 +8,9 @@ export async function startApolloServer(typeDefs, resolvers) {
     const app = express();
     const httpServer = http.createServer(app);
 
+    app.get('/', (req, res) => 
+    res.send('¡Bienvenid@ a mi app! esta aplicación está desarrollada con graphql así que te invito a que pruebes con la ruta /graphql. ¡Saludos!'))
+
     const server = new ApolloServer({
         typeDefs,
         resolvers
