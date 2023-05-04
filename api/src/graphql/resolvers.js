@@ -5,9 +5,15 @@ export const resolvers = {
         hello: () => {
             return 'Holis'
         },
-        async getProjects() {
-            const projects = await Project.find();
-            return projects;
+        async projects(_, { input }) {
+            const projects = await Project.find({...input});
+            if(projects.length == 0) {
+                throw new Error('No existen proyectos en la base de datos aún')
+            }
+            return projects
+        },
+        async project(_, {_id}) {
+            return await Project.findById(_id);
         }
     },
     Mutation: {

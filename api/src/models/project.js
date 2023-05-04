@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
 
 const projectSchema = new Schema(
     {
@@ -25,7 +24,5 @@ const projectSchema = new Schema(
         timestamps: true
     }
 );
-
-projectSchema.plugin(mongoosePaginate);
 
 export default model('users_test_kevinPatiño', projectSchema);
