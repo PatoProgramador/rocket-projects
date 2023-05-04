@@ -13,15 +13,13 @@ export const GET_PROJECTS = gql`
 `;
 
 export const CREATE_PROJECT = gql`
-    {
-        mutation($input: ProjectInput){
-            createProject(input: $input){
-                _id
-                clientName
-                value
-                department
-                city
-            }
+    mutation($clientName: String!, $value: Int!, $department: String!, $city: String!) {
+        createProject(clientName: $clientName, value: $value, department: $department, city: $city) {
+            _id
+            clientName
+            value
+            department
+            city
         }
-    }
-`
+}
+`;

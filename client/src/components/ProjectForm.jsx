@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from '@apollo/client';
+import { useMutation } from "@apollo/client";
 import { CREATE_PROJECT } from "../graphql/projects";
 
 export function ProjectForm() {
@@ -10,6 +10,8 @@ export function ProjectForm() {
     department: "",
     city: ""
   });
+
+  // peticion a la api
   const [createProject, { loading, error}] = useMutation(CREATE_PROJECT)
 
   const handleChange = ({ target: { name, value } }) => {
@@ -19,16 +21,16 @@ export function ProjectForm() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createProject({
+    await createProject({
       variables: {
-        input: {
-          ...project
-        }
+        clientName: project.clientName,
+        value: parseInt(project.value),
+        department: project.department,
+        city: project.city
       }
     })
-    console.log(project)
   }
 
   return (
