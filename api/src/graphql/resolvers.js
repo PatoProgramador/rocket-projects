@@ -7,9 +7,6 @@ export const resolvers = {
         },
         async getProjects() {
             const projects = await Project.find();
-            if(!projects) {
-                return 'No existen proyectos aún :('
-            };
             return projects;
         }
     },
@@ -18,6 +15,12 @@ export const resolvers = {
            const newProject = new Project(input);
            await newProject.save();
            return newProject;
+        },
+        async deleteProject(_, { _id }) {
+            return await Project.findByIdAndDelete(_id);
+        },
+        async updateProject(_, {_id, input}) {
+            return await Project.findByIdAndUpdate(_id, input, { new: true});
         }
     }
 };
