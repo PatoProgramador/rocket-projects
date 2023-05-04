@@ -1,5 +1,3 @@
-// import { makeExecutableSchema } from "@graphql-tools/schema";
-// import { resolvers } from "./resolvers.js";
 import { gql } from 'graphql-tag';
 
 export const typeDefs = gql`
@@ -35,8 +33,3 @@ export const typeDefs = gql`
         city: String
     }
 `;
-
-// export default makeExecutableSchema({
-//     typeDefs: typeDefs,
-//     resolvers: resolvers
-// });
