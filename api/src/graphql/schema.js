@@ -4,6 +4,7 @@ import { resolvers } from "./resolvers.js";
 const typeDefs = `
     type Query {
         hello: String
+        getProjects: [Project]
     }
 
     type Mutation {

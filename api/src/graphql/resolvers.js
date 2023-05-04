@@ -4,6 +4,13 @@ export const resolvers = {
     Query: {
         hello: () => {
             return 'Holis'
+        },
+        async getProjects() {
+            const projects = await Project.find();
+            if(!projects) {
+                return 'No existen proyectos aún :('
+            };
+            return projects;
         }
     },
     Mutation: {
