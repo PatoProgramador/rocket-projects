@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "../graphql/projects";
-import { useTable } from 'react-table';
+import { useTable, useGlobalFilter, useSortBy } from 'react-table';
 
 export function ProjectList() {
     const { loading, error, data } = useQuery(GET_PROJECTS);
@@ -30,42 +30,61 @@ export function ProjectList() {
         ],
         []
     );
-    const tableInstance = useTable({ columns, data: data.projects });
+    const tableInstance = useTable({ columns, data: data.projects }, useGlobalFilter, useSortBy);
 
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         rows,
-        prepareRow
+        prepareRow,
+        preGlobalFilteredRows,
+        setGlobalFilter,
+        state
     } = tableInstance;
 
-    console.log(data)
     return (
-        <table {...getTableProps()}>
-            <thead>
-                {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map((column) => (
-                            <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()} >
-                {rows.map((row) => {
-                    prepareRow(row);
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map((cell) => {
-                                return (
-                                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                                );
-                            })}
+        <div>
+            <input
+                type="text"
+                value={state.globalFilter}
+                onChange={(event) => setGlobalFilter(event.target.value)}
+            />
+            <table {...getTableProps()}>
+                <thead>
+                    {headerGroups.map((headerGroup) => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column) => (
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    {column.render("Header")}
+                                    <span>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? " Z-A🔽"
+                                                : " A-Z🔼"
+                                            : ""}
+                                    </span>
+                                </th>
+                            ))}
                         </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+                    ))}
+                </thead>
+                <tbody {...getTableBodyProps()} >
+                    {rows.map((row) => {
+                        prepareRow(row);
+                        return (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map((cell) => {
+                                    return (
+                                        <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                                    );
+                                })}
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+            <p>Total de registros: {preGlobalFilteredRows.length}</p>
+        </div>
     );
 }
