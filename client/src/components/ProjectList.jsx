@@ -1,16 +1,20 @@
-import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "../graphql/projects";
-import { useTable, useGlobalFilter, useSortBy } from 'react-table';
+import { useState } from "react";
 
 export function ProjectList() {
+
     const { loading, error, data } = useQuery(GET_PROJECTS);
+    
 
     if (loading) return <p>Loading...</p>
+
     if (error) return <p>Error</p>
 
-    const columns = useMemo(
-        () => [
+    let dataS = data.projects;
+
+    
+    const columns = [
             {
                 Header: 'Nombre del Cliente',
                 accessor: 'clientName',
@@ -27,64 +31,36 @@ export function ProjectList() {
                 Header: 'Ciudad del Proyecto',
                 accessor: 'city',
             },
-        ],
-        []
-    );
-    const tableInstance = useTable({ columns, data: data.projects }, useGlobalFilter, useSortBy);
-
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-        preGlobalFilteredRows,
-        setGlobalFilter,
-        state
-    } = tableInstance;
+        ]
 
     return (
-        <div>
-            <input
-                type="text"
-                value={state.globalFilter}
-                onChange={(event) => setGlobalFilter(event.target.value)}
-            />
-            <table {...getTableProps()}>
-                <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render("Header")}
-                                    <span>
-                                        {column.isSorted
-                                            ? column.isSortedDesc
-                                                ? " Z-A🔽"
-                                                : " A-Z🔼"
-                                            : ""}
-                                    </span>
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
+        <div >
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 " >
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        {
+                            columns.map((column) => (
+                                <>
+                                    <th scope="col" className="px-6 py-3" key={column.accessor}>{column.Header}</th>
+                                </>
+                            ))
+                        }
+                    </tr>
                 </thead>
-                <tbody {...getTableBodyProps()} >
-                    {rows.map((row) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => {
-                                    return (
-                                        <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                                    );
-                                })}
+                <tbody className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    {
+                        dataS.map((project) => (
+                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={project._id}>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{project.clientName}</td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{project.value}</td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{project.department}</td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{project.city}</td>
                             </tr>
-                        );
-                    })}
+                        ))
+                    }
                 </tbody>
             </table>
-            <p>Total de registros: {preGlobalFilteredRows.length}</p>
+            <p className="font-medium text-gray-900 whitespace-nowrap dark:text-white">Total de registros: {dataS.length}</p>
         </div>
     );
 }
