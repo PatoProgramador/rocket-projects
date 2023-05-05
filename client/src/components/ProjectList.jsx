@@ -1,57 +1,71 @@
-import React from 'react'
+import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_PROJECTS } from "../graphql/projects";
-import Table from './Table'
-
+import { useTable } from 'react-table';
 
 export function ProjectList() {
     const { loading, error, data } = useQuery(GET_PROJECTS);
 
-    if(loading) return <p>Loading...</p>
-    if(error) return <p>Error</p>
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error</p>
 
-    const columns = React.useMemo(
+    const columns = useMemo(
         () => [
-          {
-            Header: 'Nombre del Cliente',
-            accessor: 'nombreCliente',
-          },
-          {
-            Header: 'Valor del Proyecto',
-            accessor: 'valorProyecto',
-          },
-          {
-            Header: 'Departamento del Proyecto',
-            accessor: 'departamentoProyecto',
-          },
-          {
-            Header: 'Ciudad del Proyecto',
-            accessor: 'ciudadProyecto',
-          },
+            {
+                Header: 'Nombre del Cliente',
+                accessor: 'clientName',
+            },
+            {
+                Header: 'Valor del Proyecto',
+                accessor: 'value',
+            },
+            {
+                Header: 'Departamento del Proyecto',
+                accessor: 'department',
+            },
+            {
+                Header: 'Ciudad del Proyecto',
+                accessor: 'city',
+            },
         ],
         []
-      );
-    
-      if (loading) return <p>Loading...</p>;
-      if (error) return <p>Error :(</p>;
-    
-      
-      const projects = data.map(({ node }) => ({
-        nombreCliente: node.clientName,
-        valorProyecto: node.value,
-        departamentoProyecto: node.department,
-        ciudadProyecto: node.city,
-      }));
-    
-      return (
-        <Table columns={columns} data={projects} />
-      );
-//     return <div>
-//         {
-//             data.projects.map((project, index) => (
-//                 <ProjectCard key={index} project={project}/>
-//             ))
-//         }
-//     </div>
-// 
+    );
+    const tableInstance = useTable({ columns, data: data.projects });
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow
+    } = tableInstance;
+
+    console.log(data)
+    return (
+        <table {...getTableProps()}>
+            <thead>
+                {headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                            <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                        ))}
+                    </tr>
+                ))}
+            </thead>
+            <tbody {...getTableBodyProps()} >
+                {rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                        <tr {...row.getRowProps()}>
+                            {row.cells.map((cell) => {
+                                return (
+                                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                                );
+                            })}
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+    );
 }

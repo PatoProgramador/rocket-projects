@@ -4,6 +4,7 @@ import { Projects } from './pages/Projects';
 import { Table } from './pages/Table';
 
 
+
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   cache: new InMemoryCache()
